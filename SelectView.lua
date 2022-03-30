@@ -68,6 +68,7 @@ local function SelectView(selectview)
 	if getmetatable(selectview) == nil or getmetatable(selectview).__index ~= ISelectView then
 		local sv = selectview
 		selectview = setmetatable({
+			id = selectview.id,
 			parent = selectview.parent,
 			x = (selectview.x or parent.width),
 			y = (selectview.y or parent.width),

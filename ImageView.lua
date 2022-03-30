@@ -20,6 +20,7 @@ local function ImageView(imageview)
 	if getmetatable(imageview) == nil or getmetatable(imageview).__index ~= IImageView then
 		local iv = imageview
 		imageview = setmetatable({
+			id = imageview.id,
 			x = imageview.x,
 			y = imageview.y,
 			color = imageview.color or {1, 1, 1, 1},

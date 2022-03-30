@@ -28,6 +28,7 @@ local function ParticleSystem(particlesystem)
 	if getmetatable(particlesystem) == nil or getmetatable(particlesystem).__index ~= IParticleSystem then
 		local ps = particlesystem
 		particle_system = setmetatable({
+			id = particlesystem.id,
 			x = particlesystem.x, y = particlesystem.y,
 			width = -1,
 			height = -1,

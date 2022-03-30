@@ -1,9 +1,10 @@
 local ITextInput = setmetatable({}, { __index = love.AUI.IUIObject })
 
 function ITextInput:draw()
-	love.graphics.setScissor(self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
+	love.graphics.setScissor(self.x - self.width / 2 + math.sin(self.angle) * self.height, self.y - self.height / 2, self.width - 2 * math.sin(self.angle) * self.height, self.height)
 	love.graphics.setColor(self.color)
 	love.graphics.draw(unpack(self.__text_layer))
+	love.graphics.setScissor(self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
 	if self.line then
 		love.graphics.setLineWidth(self.line.width)
 		love.graphics.setColor(self.line.color)
@@ -83,23 +84,60 @@ function ITextInput:onKeyEvent(key)
 	end
 end
 
+function ITextInput:updatePosition()
+	if self.line then
+		if self.angle == 0 then
+			self.__p[1], self.__p[2] = math.round(self.x - self.width / 2), math.round(self.y - self.height / 2)
+			self.__p[3], self.__p[4] = math.round(self.x - self.width / 2), math.round(self.y + self.height / 2)
+			self.__p[5], self.__p[6] = math.round(self.x + self.width / 2), math.round(self.y + self.height / 2)
+			self.__p[7], self.__p[8] = math.round(self.x + self.width / 2), math.round(self.y - self.height / 2)
+		elseif self.angle > 0 then
+			self.__p[1], self.__p[2] = math.round(self.x - self.width / 2 + math.sin(self.angle) * self.height), math.round(self.y - self.height / 2)
+			self.__p[3], self.__p[4] = math.round(self.x - self.width / 2), math.round(self.y + self.height / 2)
+			self.__p[5], self.__p[6] = math.round(self.x + self.width / 2 - math.sin(self.angle) * self.height), math.round(self.y + self.height / 2)
+			self.__p[7], self.__p[8] = math.round(self.x + self.width / 2), math.round(self.y - self.height / 2)
+		else
+			self.__p[1], self.__p[2] = math.round(self.x - self.width / 2), math.round(self.y - self.height / 2)
+			self.__p[3], self.__p[4] = math.round(self.x - self.width / 2 - math.sin(self.angle) * self.height), math.round(self.y + self.height / 2)
+			self.__p[5], self.__p[6] = math.round(self.x + self.width / 2), math.round(self.y + self.height / 2)
+			self.__p[7], self.__p[8] = math.round(self.x + self.width / 2 + math.sin(self.angle) * self.height), math.round(self.y - self.height / 2)
+		end
+	end
+	self.__k = (self.__p[6] - self.__p[8]) / (self.__p[5] - self.__p[7])
+	self.__text_layer[3] = self.y - self.__text_layer[1]:getHeight() / 2
+	if self.text_position then
+		if self.text_position == "center" then
+			self.__text_layer[2] = self.x - self.__text_layer[1]:getWidth() / 2
+		elseif self.text_position == "left" then
+			self.__text_layer[2] = self.x - math.floor(self.width / 2) + math.sin(self.angle) * self.height
+		elseif self.text_position == "right" then
+			self.__text_layer[2] = self.x + math.floor(self.width / 2) - self.__text_layer[1]:getWidth() - math.sin(self.angle) * self.height
+		end
+	else
+		self.__text_layer[2] = self.x - self.__text_layer[1]:getWidth() / 2
+	end
+end
+
 local function TextInput(textinput)
 	local parent = textinput.parent or love.AUI.ILayout.DefaultValue
 	if getmetatable(textinput) == nil or getmetatable(textinput).__index ~= ITextInput then
 		local ti = textinput
 		textinput = setmetatable({
+			id = textinput.id,
 			parent = textinput.parent,
 			x = (textinput.x or parent.width),
 			y = (textinput.y or parent.width),
 			width  = textinput.width or  textinput.w or math.floor(parent.width / 2),
 			height = textinput.height or textinput.h or math.floor(parent.height / 2),
-			text = textinput.text,
+			angle = textinput.angle or 0,
+			text = textinput.text or "",
 			text_position = textinput.text_position,
 			color = textinput.color or {1, 1, 1},
 			line = textinput.line,
 			__p = {
 				0, 0, 0, 0, 0, 0, 0, 0
 			},
+			font = textinput.font or love.AUI.font,
 			__text_layer = { love.graphics.newText(textinput.font or love.AUI.font, textinput.text), 0, 0 },
 			__hover = false,
 			onMouseMove = textinput.onMouseMove or nil,
@@ -108,23 +146,22 @@ local function TextInput(textinput)
 		}, { __index = ITextInput })
 		for k, v in pairs(ti) do if not rawget(textinput, k) then textinput[k] = v end end
 	end
-	if textinput.text_position then
-		if textinput.text_position == "center" then
-			textinput.__text_layer[2] = textinput.x - textinput.__text_layer[1]:getWidth() / 2
-		elseif textinput.text_position == "left" then
-			textinput.__text_layer[2] = textinput.x - math.floor(textinput.width / 2)
-		elseif textinput.text_position == "right" then
-			textinput.__text_layer[2] = textinput.x + math.floor(textinput.width / 2) - textinput.__text_layer[1]:getWidth()
+	if textinput.line then
+		if type(textinput.line) ~= "table" then textinput.line = {} end
+		if not textinput.line.color then
+			textinput.line.color = {1, 1, 1}
 		end
-	else
-		textinput.__text_layer[2] = textinput.x - textinput.__text_layer[1]:getWidth() / 2
+		if not textinput.line.width then
+			textinput.line.width = 1
+		end
 	end
-	textinput.__text_layer[3] = textinput.y - textinput.__text_layer[1]:getHeight() / 2
+	ITextInput.updatePosition(textinput)
+	local temp = love.graphics.newText(textinput.font or love.AUI.font, ("w"):rep(10))
 	if textinput.height == 0 then
-		textinput.height = textinput.__text_layer[1]:getHeight()
+		textinput.height = temp:getHeight()
 	end
 	if textinput.width == 0 then
-		textinput.width = textinput.__text_layer[1]:getWidth()
+		textinput.width = temp:getWidth()
 	end
 	if textinput.x == 0 then
 		textinput.x = math.floor(textinput.width / 2)
@@ -134,12 +171,6 @@ local function TextInput(textinput)
 	end
 	for k, v in pairs(textinput.hoverData) do
 		textinput.default[k] = textinput[k]
-	end
-	if textinput.line then
-		textinput.__p[1], textinput.__p[2] = textinput.x - textinput.width / 2, textinput.y - textinput.height / 2
-		textinput.__p[3], textinput.__p[4] = textinput.x + textinput.width / 2, textinput.y - textinput.height / 2
-		textinput.__p[5], textinput.__p[6] = textinput.x + textinput.width / 2, textinput.y + textinput.height / 2
-		textinput.__p[7], textinput.__p[8] = textinput.x - textinput.width / 2, textinput.y + textinput.height / 2
 	end
 	return textinput
 end

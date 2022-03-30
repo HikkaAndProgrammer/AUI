@@ -39,6 +39,7 @@ local function TextLabel(textlabel)
 	if getmetatable(textlabel) == nil or getmetatable(textlabel).__index ~= ITextLabel then
 		local tl = textlabel
 		textlabel = setmetatable({
+			id = textlabel.id,
 			parent = textlabel.parent,
 			x = (textlabel.x or parent.width),
 			y = (textlabel.y or parent.width),

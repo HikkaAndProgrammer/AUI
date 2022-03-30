@@ -83,6 +83,7 @@ local function Button(button)
 	if getmetatable(button) == nil or getmetatable(button).__index ~= IButton then
 		local b = button
 		button = setmetatable({
+			id = button.id,
 			parent = button.parent,
 			x = button.x or math.floor(parent.width / 2),
 			y = button.y or math.floor(parent.height / 2),

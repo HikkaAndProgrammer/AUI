@@ -75,6 +75,16 @@ function ITabLayout:hover()
 	end
 end
 
+function ITabLayout:getElementById(id)
+	for i, children in ipairs(self.tabs) do
+		for i, v in ipairs(children) do
+			if v.id == id then return v
+			elseif v.type == "container" then return v:getElementById(id)
+			end
+		end
+	end
+end
+
 function ITabLayout:addChild(child)
 	self.children[#self.children + 1] = child
 end
@@ -106,6 +116,8 @@ local function TabLayout(tablayout)
 	if getmetatable(tablayout) == nil or getmetatable(tablayout).__index ~= getmetatable(ITabLayout).__index then
 		local tl = tablayout
 		tablayout = setmetatable({
+			id = tablayout.id,
+			type = "container",
 			parent = tablayout.parent,
 			x = tablayout.x or math.floor(parent.width / 2),
 			y = tablayout.y or math.floor(parent.height / 2),

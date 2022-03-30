@@ -136,11 +136,11 @@ function date.decode(s, st)
 			sv = {}
 		elseif c == ':' and last ~= '\\' and d == 0 then
 			if key then
-				result[parseValue(table.concat(key, ''))] = parseValue(table.concat(sv, ''))
+				result[parseValue(table.concat(key, ""))] = parseValue(table.concat(sv, ""))
 				key = nil
 				sv = {}
 			else
-				result[#result + 1] = parseValue(table.concat(sv, ''))
+				result[#result + 1] = parseValue(table.concat(sv, ""))
 				sv = {}
 			end
 		else sv[#sv + 1] = c end
@@ -148,9 +148,9 @@ function date.decode(s, st)
 	end
 	if #sv > 0 then
 		if key then
-			result[parseValue(table.concat(key, ''))] = parseValue(table.concat(sv, ''))
+			result[parseValue(table.concat(key, ""))] = parseValue(table.concat(sv, ""))
 		else
-			result[#result + 1] = parseValue(table.concat(sv, ''))
+			result[#result + 1] = parseValue(table.concat(sv, ""))
 		end
 	end
 

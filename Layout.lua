@@ -80,6 +80,14 @@ function ILayout:addChild(child)
 	self.children[#self.children + 1] = child
 end
 
+function ILayout:getElementById(id)
+	for i, v in ipairs(self.children) do
+		if v.id == id then return v
+		elseif v.type == "container" then return v:getElementById(id)
+		end
+	end
+end
+
 function ILayout:recreate(parent)
 	self.parent = parent or self.parent
 	return love.AUI.Layout(self)
@@ -95,6 +103,8 @@ local function Layout(layout)
 	if getmetatable(layout) == nil or getmetatable(layout).__index ~= getmetatable(ILayout).__index then
 		local l = layout
 		layout = setmetatable({
+			id = layout.id,
+			type = "container",
 			parent = layout.parent,
 			x = layout.x or math.floor(parent.width / 2),
 			y = layout.y or math.floor(parent.height / 2),
