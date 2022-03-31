@@ -5,6 +5,20 @@ function IImageView:draw()
 	love.graphics.draw(self.__image_layer, self.__p[1], self.__p[2])
 end
 
+function IImageView:setImage(path)
+	self.image = path
+	local xw, xh = self.__image_layer:getWidth(), self.__image_layer:getHeight()
+	self.__image_layer = love.graphics.newImage(self.image)
+	if not imageview.width then
+		imageview.width = imageview.__image_layer:getWidth()
+	end
+	if not imageview.height then
+		imageview.height = imageview.__image_layer:getHeight()
+	end
+	imageview.__p[1] = math.round(imageview.x - imageview.width / 2)
+	imageview.__p[2] = math.round(imageview.y - imageview.height / 2)
+end
+
 function IImageView:checkHover(x, y)
 	self:hover()
 	return self.__hover

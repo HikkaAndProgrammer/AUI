@@ -33,6 +33,28 @@ function ITextLabel:recreate(parent)
 	return love.AUI.TextLabel(self)
 end
 
+function ITextLabel:recreateText()
+	self.__text_layer[1] = love.graphics.newText(self.font or love.AUI.font, self.text)
+	if self.text_position then
+		if self.text_position == "center" then
+			self.__text_layer[2] = self.x - self.__text_layer[1]:getWidth() / 2
+		elseif self.text_position == "left" then
+			self.__text_layer[2] = self.x - math.floor(self.width / 2)
+		elseif self.text_position == "right" then
+			self.__text_layer[2] = self.x + math.floor(self.width / 2) - self.__text_layer[1]:getWidth()
+		end
+	else
+		self.__text_layer[2] = self.x - self.__text_layer[1]:getWidth() / 2
+	end
+	self.__text_layer[3] = self.y - self.__text_layer[1]:getHeight() / 2
+	if self.height == 0 then
+		self.height = self.__text_layer[1]:getHeight()
+	end
+	if self.width == 0 then
+		self.width = self.__text_layer[1]:getWidth()
+	end
+end
+
 local function TextLabel(textlabel)
 	local parent = textlabel.parent or love.AUI.ILayout.DefaultValue
 	local font = textlabel.font or love.AUI.font
