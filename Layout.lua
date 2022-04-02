@@ -34,7 +34,7 @@ function ILayout:checkHover(x, y)
 		if (((v.x - v.width / 2) < x) and ((v.y - v.height / 2) < y))
 			and (((v.x + v.width / 2) > x) and ((v.y + v.height / 2) > y)) then
 				v:checkHover(x, y)
-		else v:unhover() end
+		elseif v.__hover then v:unhover() end
 	end
 	return self.__hover
 end

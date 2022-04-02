@@ -8,12 +8,22 @@ function IButton:draw()
 end
 
 function IButton:checkHover(x, y)
-	if self.x > x then
-		if (y - self.precounted[1]) > (x - self.precounted[2]) * self.__k then self:hover() end
-	elseif self.x <= x then
-		if (y - self.precounted[3]) < (x - self.precounted[4]) * self.__k then self:hover() end
+	if self.angle >= 0 then
+		if self.x > x then
+			if (y - self.precounted[1]) > (x - self.precounted[2]) * self.__k then self:hover() end
+		elseif self.x <= x then
+			if (y - self.precounted[3]) < (x - self.precounted[4]) * self.__k then self:hover() end
+		else
+			self:unhover()
+		end
 	else
-		self:unhover()
+		if self.x > x then
+			if (y + self.precounted[1]) < (x + self.precounted[2]) * self.__k then self:hover() end
+		elseif self.x <= x then
+			if (y - self.precounted[3]) > (x - self.precounted[4]) * self.__k then self:hover() end
+		else
+			self:unhover()
+		end
 	end
 	return self.__hover
 end
