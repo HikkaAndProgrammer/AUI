@@ -82,8 +82,10 @@ end
 
 function ILayout:getElementById(id)
 	for i, v in ipairs(self.children) do
-		if v.id == id then return v
-		elseif v.type == "container" then return v:getElementById(id)
+		if v.id then
+			if v.id == id then return v
+			elseif v.type == "container" then return v:getElementById(id)
+			end
 		end
 	end
 end
