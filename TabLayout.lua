@@ -89,9 +89,22 @@ function ITabLayout:addChild(child)
 	self.children[#self.children + 1] = child
 end
 
+function ITabLayout:removeChild(id)
+	for k, v in pairs(self.children) do
+		if v.id and v.id == id or k == id then table.remove(self.children, k) end
+	end
+end
+
 function ITabLayout:addChildToTab(child, n)
 	if self.tabs[n] then
 		self.tabs[n][#(self.tabs[n]) + 1] = child
+	end
+end
+
+function ITabLayout:removeChildFromTab(id, n)
+	local c = self.tabs[n]
+	for k, v in pairs(c) do
+		if v.id and v.id == id or k == id then table.remove(c, k) end
 	end
 end
 
