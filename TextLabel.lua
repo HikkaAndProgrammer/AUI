@@ -87,9 +87,9 @@ local function TextLabel(textlabel)
 		if textlabel.text_position == "center" then
 			textlabel.__text_layer[2] = textlabel.x - textlabel.__text_layer[1]:getWidth() / 2
 		elseif textlabel.text_position == "left" then
-			textlabel.__text_layer[2] = textlabel.x - math.floor(textlabel.width / 2) + math.sin(textlabel.angle) * button.height
+			textlabel.__text_layer[2] = textlabel.x - math.floor(textlabel.width / 2) 
 		elseif textlabel.text_position == "right" then
-			textlabel.__text_layer[2] = textlabel.x + math.floor(textlabel.width / 2) - textlabel.__text_layer[1]:getWidth() - math.sin(button.angle) * button.height
+			textlabel.__text_layer[2] = textlabel.x + math.floor(textlabel.width / 2) - textlabel.__text_layer[1]:getWidth() 
 		end
 	else
 		textlabel.__text_layer[2] = textlabel.x - textlabel.__text_layer[1]:getWidth() / 2
