@@ -1,9 +1,11 @@
 local IButton = setmetatable({}, { __index = love.AUI.IUIObject })
 
 function IButton:draw()
-	love.graphics.setLineWidth(self.lineWidth)
 	love.graphics.setColor(self.color)
-	love.graphics.polygon("line", self.__p)
+	if self.line then
+		love.graphics.setLineWidth(self.lineWidth)
+		love.graphics.polygon("line", self.__p)
+	end
 	love.graphics.draw(unpack(self.__text_layer))
 end
 
@@ -101,6 +103,7 @@ local function Button(button)
 			height = button.height or button.h or math.floor(parent.height / 2),
 			angle = button.angle or 0,
 			text = button.text or "",
+			line = button.line == nil and true or button.line,
 			__p = {
 				0, 0,
 				0, 0,
