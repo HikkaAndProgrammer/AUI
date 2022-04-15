@@ -48,4 +48,6 @@ love.AUI.theme = love.AUI.defaultTheme
 
 love.AUI.settings = love.AUI.Settings()
 
+love.AUI.logger:log("success", "AlmiriUI loaded")
+
 return love.AUI 
