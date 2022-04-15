@@ -87,10 +87,12 @@ function ILayout:removeChild(id)
 end
 
 function ILayout:getElementById(id)
-	for i, v in ipairs(self.children) do
-		if v.id then
+	for i, v in pairs(self.children) do
+		if v.type == "container" then
+			local t = v:getElementById(id)
+			if t then return t end
+		elseif v.id then
 			if v.id == id then return v
-			elseif v.type == "container" then return v:getElementById(id)
 			end
 		end
 	end
@@ -150,6 +152,7 @@ local function Layout(layout)
 		for i, v in ipairs(children) do
 			layout.children[i] = v:recreate(layout)
 		end
+		layout.recreate_children = false
 	end
 	for k, v in pairs(layout.hoverData) do
 		layout.default[k] = layout[k]

@@ -77,9 +77,13 @@ end
 
 function ITabLayout:getElementById(id)
 	for i, children in ipairs(self.tabs) do
-		for i, v in ipairs(children) do
-			if v.id == id then return v
-			elseif v.type == "container" then return v:getElementById(id)
+		for i, v in pairs(self.children) do
+			if v.type == "container" then
+				local t = v:getElementById(id)
+				if t then return t end
+			elseif v.id then
+				if v.id == id then return v
+				end
 			end
 		end
 	end
