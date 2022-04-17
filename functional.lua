@@ -30,6 +30,16 @@ function love.AUI.map(t, l)
 	return t
 end
 
+function love.AUI.filter(t, f)
+	r = {}
+	if type(f) == "function" then
+		for k, v in pairs(t) do if f(v) then r[#r + 1] = v end end
+	else
+		for k, v in pairs(t) do if v == f then r[#r + 1] = v end end
+	end
+	return r
+end
+
 function love.AUI.get_first(t, n)
 	local _t = {}
 	local k, v
