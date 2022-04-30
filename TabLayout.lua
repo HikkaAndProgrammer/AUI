@@ -56,6 +56,15 @@ function ITabLayout:click(x, y, button)
 	end
 end
 
+function ITabLayout:press(x, y, button)
+	for i, v in ipairs(self.children) do
+		if (((v.x - v.width / 2) < x) and ((v.y - v.height / 2) < y))
+		and (((v.x + v.width / 2) > x) and ((v.y + v.height / 2) > y)) then
+			v:press(x, y, button)
+		end
+	end
+end
+
 function ITabLayout:unhover()
 	if not self.__hover then return end
 	self.__hover = false

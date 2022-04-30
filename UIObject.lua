@@ -8,6 +8,7 @@ function IUIObject:hover() self.__hover = true end
 function IUIObject:recreate(parent) end
 function IUIObject:recreateSelf() end
 function IUIObject:click(x, y, button) end
+function IUIObject:press(x, y, button) end
 function IUIObject:onKeyEvent(key) end
 function IUIObject:onMouseMove(x, y, dx, dy) end
 
