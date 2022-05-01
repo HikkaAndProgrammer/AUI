@@ -34,7 +34,10 @@ function IListFile:update()
 		self.x - self.width / 2, self.y - self.height / 2 - self.offsetY % self.line_height
 	}
 	for i = 1, self.displayN do
-		self.__text[i] = {love.graphics.newText(self.font, self.list[i + math.floor(self.offsetY / self.line_height)]), 
+		local text = (self.list[i + math.floor(self.offsetY / self.line_height)] or ""):split"/" or {""}
+		local padding = ("     "):rep(#text - 1) or ""
+		text = padding .. (text[#text] or "")
+		self.__text[i] = {love.graphics.newText(self.font, text), 
 			self.x - self.width / 2, self.y - self.height / 2 + i * self.line_height - self.offsetY % self.line_height
 		}
 	end
@@ -42,9 +45,13 @@ end
 
 function IListFile:onMouseMove(x, y, dx, dy)
 	if love.mouse.isDown(1) then
-		self.offsetY = self.offsetY - dy
-		if self.offsetY < self.line_height then self.offsetY = self.line_height end
-		if self.offsetY > self.line_height * (#self.list - self.displayN + 2) then self.offsetY = self.line_height * (#self.list - self.displayN + 2) end
+		if self.line_height * #self.list > self.height then
+			self.offsetY = self.offsetY - dy
+			if self.offsetY < self.line_height then self.offsetY = self.line_height end
+			if self.offsetY > self.line_height * (#self.list - self.displayN + 2) then 
+				self.offsetY = self.line_height * (#self.list - self.displayN + 2)
+			end 
+		end
 		self:update()
 	end
 end
@@ -65,7 +72,26 @@ end
 function IListFile:click(x, y, button)
 	if button == 1 then
 		if (self.__click[1] == x) and (self.__click[2] == y) then
-			print("booba")
+			local index = math.floor((y + self.offsetY + self.height / 2 - self.y) / self.line_height)
+			if self.list[index] ~= nil then
+				if self.__folders[self.list[index]] == true then
+					for i = index, #self.list do
+						if index + 1 > #self.list then break end
+						if not self.list[index + 1]:startswith(self.list[index]) then break end
+						if self.__folders[self.list[index + 1]] then
+							self.__folders[self.list[index + 1]] = false
+						end
+						table.remove(self.list, index + 1)
+					end
+					self.__folders[self.list[index]] = false
+				else
+					for i, file in ipairs(love.filesystem.getDirectoryItems(self.project .. "/" .. self.list[index])) do
+						table.insert(self.list, index + i, self.list[index] .. "/" .. file)
+					end
+					self.__folders[self.list[index]] = true
+				end
+				self:update()
+			end
 		end
 	end
 end
@@ -102,7 +128,9 @@ local function ListFile(listfile)
 			line_height = love.graphics.newText(font, "^|lLI"):getHeight(),
 			color = listfile.color or {1, 1, 1},
 			list = listfile.list or {},
+			project = listfile.project,
 			__click = {0, 0},
+			__folders = {},
 			__text = {}, 
 			__hover = false,
 			onMouseMove = listfile.onMouseMove or nil,

@@ -30,6 +30,21 @@ function love.AUI.map(t, l)
 	return t
 end
 
+function string.startswith(str, start)
+   return str:sub(1, #start) == start
+end
+
+function string.split(inputstr, sep)
+	if sep == nil then
+		sep = "%s"
+	end
+	local t = {}
+	for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+		table.insert(t, str)
+	end
+	return t
+end
+
 function love.AUI.filter(t, f)
 	r = {}
 	if type(f) == "function" then
