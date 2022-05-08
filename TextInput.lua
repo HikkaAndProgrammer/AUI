@@ -63,6 +63,7 @@ function ITextInput:recreateText()
 end
 
 function ITextInput:click(x, y, button)
+	love.keyboard.setTextInput(true)
 	if button == 2 then
 		self.text = ""
 		self:recreateText()
