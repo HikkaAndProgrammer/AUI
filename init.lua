@@ -1,3 +1,5 @@
+require"AUI/functional"
+
 love.AUI = {
 	font = love.graphics.getFont(),
 	Settings = require"AUI/Settings",
@@ -5,11 +7,9 @@ love.AUI = {
 	selected = nil,
 	mouse_pressed = false,
 	date = require"AUI/date",
-	logger = require"AUI/logger"
+	logger = require"AUI/logger",
+	MAS = require"AUI/MAS"
 }
-
-require"AUI/functional"
-
 
 function love.AUI.setFont(name, size)
 	love.AUI.font = love.graphics.newFont(name, size)

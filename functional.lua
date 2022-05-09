@@ -1,4 +1,4 @@
-function love.AUI.sort(t, f)
+function table.sort(t, f)
 	table.sort(t, f)
 	return t
 end
@@ -7,7 +7,7 @@ local function num_sort(a, b)
 	return a < b
 end
 
-function love.AUI.sort_numbers(t)
+function table.sort_numbers(t)
 	table.sort(t, num_sort)
 	return t
 end
@@ -18,12 +18,12 @@ local function key_num_sort(key)
 	end
 end
 
-function love.AUI.sort_key_numbers(t, key)
+function table.sort_key_numbers(t, key)
 	table.sort(t, key_num_sort(key))
 	return t
 end
 
-function love.AUI.map(t, l)
+function table.map(t, l)
 	for k, v in pairs(t) do
 		t[k] = l(v)
 	end
@@ -38,18 +38,15 @@ function string.endswith(str, ending)
    return ending == "" or str:sub(-#ending) == ending
 end
 
-function string.split(inputstr, sep)
-	if sep == nil then
-		sep = "%s"
+function string.split(s, delimiter)
+	result = {}
+	for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+		table.insert(result, match)
 	end
-	local t = {}
-	for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-		table.insert(t, str)
-	end
-	return t
+	return result
 end
 
-function love.AUI.filter(t, f)
+function table.filter(t, f)
 	r = {}
 	if type(f) == "function" then
 		for k, v in pairs(t) do if f(v) then r[#r + 1] = v end end
@@ -59,21 +56,7 @@ function love.AUI.filter(t, f)
 	return r
 end
 
-function love.AUI.get_first(t, n)
-	local _t = {}
-	local k, v
-	for i = 1, n do
-		if k then
-			k, v = next(t, k)
-		else
-			k, v = next(t)
-		end
-		_t[k] = v
-	end
-	return _t
-end
-
-function love.AUI.get_first(t, n)
+function table.get_first(t, n)
 	local _t = {}
 	local k, v
 	for i = 1, n do
@@ -89,7 +72,7 @@ function love.AUI.get_first(t, n)
 	return _t
 end
 
-function love.AUI.get_last(t, n)
+function table.get_last(t, n)
 	local _t = {}
 	for i = #t - n, #t do
 		_t[i] = t[i]
@@ -97,7 +80,7 @@ function love.AUI.get_last(t, n)
 	return _t
 end
 
-function love.AUI.search(t, n)
+function table.search(t, n)
 	for i, v in ipairs(t) do
 		if v == n then
 			return true
@@ -106,12 +89,14 @@ function love.AUI.search(t, n)
 	return false
 end
 
-function love.AUI.inspect(table, deep)
-    deep = deep or 0
-    for k, v in pairs(table) do
-        print(("\t"):rep(deep) .. tostring(k), v)
-        if type(v) == "table" then
-            inspect(v, deep + 1)
-        end
-    end
+function table.inspect(table, deep)
+	deep = deep or 0
+	for k, v in pairs(table) do
+		print(("\t"):rep(deep) .. tostring(k), v)
+		if type(v) == "table" then
+			inspect(v, deep + 1)
+		end
+	end
 end
+
+function raw(x) return x end
