@@ -74,23 +74,27 @@ function IListFile:click(x, y, button)
 		if (self.__click[1] == x) and (self.__click[2] == y) then
 			local index = math.floor((y + self.offsetY + self.height / 2 - self.y) / self.line_height)
 			if self.list[index] ~= nil then
-				if self.__folders[self.list[index]] == true then
-					for i = index, #self.list do
-						if index + 1 > #self.list then break end
-						if not self.list[index + 1]:startswith(self.list[index]) then break end
-						if self.__folders[self.list[index + 1]] then
-							self.__folders[self.list[index + 1]] = false
+				if love.filesystem.getInfo((self.project .. "/" .. self.list[index]), "directory") then
+					if self.__folders[self.list[index]] == true then
+						for i = index, #self.list do
+							if index + 1 > #self.list then break end
+							if not self.list[index + 1]:startswith(self.list[index]) then break end
+							if self.__folders[self.list[index + 1]] then
+								self.__folders[self.list[index + 1]] = false
+							end
+							table.remove(self.list, index + 1)
 						end
-						table.remove(self.list, index + 1)
+						self.__folders[self.list[index]] = false
+					else
+						for i, file in ipairs(love.filesystem.getDirectoryItems(self.project .. "/" .. self.list[index])) do
+							table.insert(self.list, index + i, self.list[index] .. "/" .. file)
+						end
+						self.__folders[self.list[index]] = true
 					end
-					self.__folders[self.list[index]] = false
+					self:update()
 				else
-					for i, file in ipairs(love.filesystem.getDirectoryItems(self.project .. "/" .. self.list[index])) do
-						table.insert(self.list, index + i, self.list[index] .. "/" .. file)
-					end
-					self.__folders[self.list[index]] = true
+					self:onClick(self.list[index])
 				end
-				self:update()
 			end
 		end
 	end
@@ -136,6 +140,7 @@ local function ListFile(listfile)
 			onMouseMove = listfile.onMouseMove or nil,
 			hoverData = listfile.hoverData or {},
 			default = {},
+			onClick = listfile.onClick or function(s, file)end,
 			offsetY = 0,
 			displayN = 0
 		}, { __index = IListFile })
@@ -172,7 +177,6 @@ local function ListFile(listfile)
 		listfile.y = math.floor(listfile.height / 2)
 	end
 
-	listfile:update()
 
 	for k, v in pairs(listfile.hoverData) do
 		listfile.default[k] = listfile[k]
@@ -181,6 +185,8 @@ local function ListFile(listfile)
 	listfile.displayN = math.ceil(listfile.height / listfile.line_height)
 	listfile.offsetY = listfile.line_height
 
+	listfile:update()
+	
 	return listfile
 end
 
