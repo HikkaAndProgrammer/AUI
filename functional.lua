@@ -34,6 +34,10 @@ function string.startswith(str, start)
    return str:sub(1, #start) == start
 end
 
+function string.endswith(str, ending)
+   return ending == "" or str:sub(-#ending) == ending
+end
+
 function string.split(inputstr, sep)
 	if sep == nil then
 		sep = "%s"
@@ -91,4 +95,23 @@ function love.AUI.get_last(t, n)
 		_t[i] = t[i]
 	end
 	return _t
+end
+
+function love.AUI.search(t, n)
+	for i, v in ipairs(t) do
+		if v == n then
+			return true
+		end
+	end
+	return false
+end
+
+function love.AUI.inspect(table, deep)
+    deep = deep or 0
+    for k, v in pairs(table) do
+        print(("\t"):rep(deep) .. tostring(k), v)
+        if type(v) == "table" then
+            inspect(v, deep + 1)
+        end
+    end
 end
