@@ -75,6 +75,12 @@ function ITextEditor:click(x, y, button)
 	love.keyboard.setTextInput(true)
 end
 
+function ITextEditor:hot_key(key)
+	if key == "s" then
+		love.filesystem.write(self.file, table.concat( self.text, "\n"))
+	end
+end
+
 function ITextEditor:onKeyEvent(key)
 	if #key == 1 then
 		self.text[#self.text] = self.text[#self.text] .. key
@@ -84,12 +90,11 @@ function ITextEditor:onKeyEvent(key)
 	elseif key == "backspace" then
 		if self.text[#self.text] == "" then
 			table.remove(self.text, #self.text)
-		else
-			self.text[#self.text] = self.text[#self.text]:sub(1, #self.text[#self.text] - 1)
-		end
+	else
+		self.text[#self.text] = self.text[#self.text]:sub(1, #self.text[#self.text] - 1)
 		self:update()
+		end
 	end
-	love.filesystem.write(self.file, table.concat( self.text, "\n"))
 end
 
 local function TextEditor(texteditor)
