@@ -76,23 +76,27 @@ function ITextEditor:click(x, y, button)
 end
 
 function ITextEditor:hot_key(key)
-	if key == "s" then
+	if love.keyboard.isScancodeDown"s" then
 		love.filesystem.write(self.file, table.concat( self.text, "\n"))
 	end
 end
 
 function ITextEditor:onKeyEvent(key)
-	if #key == 1 then
+	if love.AUI.utf8.len(key) == 1 then
+		if #self.text == 0 then table.insert(self.text, #self.text + 1, "") end
 		self.text[#self.text] = self.text[#self.text] .. key
 		self:update()
 	elseif key == "return" then
 		table.insert(self.text, #self.text + 1, "")
 	elseif key == "backspace" then
-		if self.text[#self.text] == "" then
-			table.remove(self.text, #self.text)
-	else
-		self.text[#self.text] = self.text[#self.text]:sub(1, #self.text[#self.text] - 1)
-		self:update()
+		if #self.text > 0 then
+			if self.text[#self.text] == "" then
+				table.remove(self.text, #self.text)
+			else
+				local text = self.text[#self.text]
+				self.text[#self.text] = love.AUI.utf8.sub(text, 1, love.AUI.utf8.len(text) - 1)
+				self:update()
+			end
 		end
 	end
 end

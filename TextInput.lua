@@ -71,14 +71,14 @@ function ITextInput:click(x, y, button)
 end
 
 function ITextInput:onKeyEvent(key)
-	if #key == 1 then
+	if love.AUI.utf8.len(key) == 1 then
 		self.text = self.text .. key
 		self:recreateText()
 	elseif key == "space" then
 		self.text = self.text .. " "
 		self:recreateText()
-	elseif key == "backspace" then
-		self.text = self.text:sub(1, #self.text - 1)
+	elseif key == "backspace" and #self.text > 0 then
+		self.text = love.AUI.utf8.sub(self.text, 1, love.AUI.utf8.len(self.text) - 1)
 		self:recreateText()
 	else
 		print(key)

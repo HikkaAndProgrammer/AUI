@@ -89,12 +89,13 @@ function table.search(t, n)
 	return false
 end
 
-function table.inspect(table, deep)
+function table.inspect(t, deep)
+	if t == love.AUI.logger then return end
 	deep = deep or 0
-	for k, v in pairs(table) do
+	for k, v in pairs(t) do
 		print(("\t"):rep(deep) .. tostring(k), v)
 		if type(v) == "table" then
-			inspect(v, deep + 1)
+			table.inspect(v, deep + 1)
 		end
 	end
 end

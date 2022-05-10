@@ -1,4 +1,6 @@
-local MAS = {}
+local MAS = {
+	debug = true
+}
 
 function MAS.error_handling(message, traceback)
 	local traceindex = 1
@@ -62,7 +64,7 @@ end
 
 function MAS.protected(f, ...)
 	local error, msg = pcall(f, ...)
-	if not error then
+	if not error and MAS.debug then
 		MAS.error_handling(
 			msg:gsub("[^%.]+%.lua:%d+: (.+)", "%1"),
 			debug.traceback():split"\n"

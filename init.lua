@@ -8,8 +8,16 @@ love.AUI = {
 	mouse_pressed = false,
 	date = require"AUI/date",
 	logger = require"AUI/logger",
-	MAS = require"AUI/MAS"
+	MAS = require"AUI/MAS",
+	utf8 = require"utf8"
 }
+
+function love.AUI.utf8.sub(s, i, j)
+    i = love.AUI.utf8.offset(s, i)
+    j = love.AUI.utf8.offset(s, j + 1) - 1
+    return string.sub(s, i, j)
+end
+
 
 function love.AUI.setFont(name, size)
 	love.AUI.font = love.graphics.newFont(name, size)

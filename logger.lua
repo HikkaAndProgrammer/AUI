@@ -3,7 +3,7 @@ local ESC = "\27[%sm"
 local log = "%s | %s[%s]%s: %s\n"
 
 -- logger contains some ansi escapes
-local Logger = {
+local Logger = setmetatable({
    -- some useful escapes: they are not used, but maybe...
    reset = ESC:format"0",
    bold = ESC:format"1",
@@ -18,7 +18,9 @@ local Logger = {
    warn = ESC:format"33;5;4", -- warn when something can go wrong
    error = ESC:format"31", -- use this when an error occures in some function (error is localized and bot continue working)
    critical = ESC:format"31;5;1;4" -- use this when an error occures and bot is dead
-}
+}, {
+   __tostring = function(self) return "<Logger>" end
+})
 
 function Logger:log(level, message)
    io.write(log:format(os.date"%c", Logger[level:lower()], level:upper(), Logger.reset, message))
