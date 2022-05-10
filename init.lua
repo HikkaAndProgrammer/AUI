@@ -43,6 +43,8 @@ love.AUI.IImageView, love.AUI.ImageView = unpack(require"AUI/ImageView")
 love.AUI.IParticleSystem, love.AUI.ParticleSystem = unpack(require"AUI/ParticleSystem")
 love.AUI.ISelectView, love.AUI.SelectView = unpack(require"AUI/SelectView")
 love.AUI.IListFile, love.AUI.ListFile = unpack(require"AUI/ListFile")
+love.AUI.IListFile, love.AUI.TextEditor = unpack(require"AUI/TextEditor")
+
 
 
 love.AUI.defaultTheme, love.AUI.Theme = unpack(require"AUI/Theme")
