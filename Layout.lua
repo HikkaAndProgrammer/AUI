@@ -91,7 +91,7 @@ end
 
 function ILayout:removeChild(id)
 	for k, v in pairs(self.children) do
-		if v.id and v.id == id or k == id then table.remove(self.children[k]) end
+		if v.id and v.id == id or k == id then table.remove(self.children, k) end
 	end
 end
 
